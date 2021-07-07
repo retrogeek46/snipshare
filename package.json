@@ -1,0 +1,14 @@
+{
+  "name": "snipshare",
+  "version": "1.0.0",
+  "description": "This is the desktop client for snipshare tool",
+  "main": "index.js",
+  "scripts": {
+    "electron": "electron ."
+  },
+  "author": "RetroGeek46",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^13.1.6"
+  }
+}
