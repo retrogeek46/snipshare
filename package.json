@@ -9,6 +9,9 @@
   "author": "RetroGeek46",
   "license": "ISC",
   "dependencies": {
-    "electron": "^13.1.6"
+    "cors": "^2.8.5",
+    "electron": "^13.1.6",
+    "express": "^4.17.1",
+    "socket.io": "^4.1.2"
   }
 }
