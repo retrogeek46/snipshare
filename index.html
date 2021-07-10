@@ -70,6 +70,23 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         var socket = io();
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (input.value) {
+                socket.emit('snipShare', input.value);
+                input.value = '';
+            }
+        });
+
+        socket.on('snipShare', function (msg) {
+            var img = document.createElement("img");
+            img.src = msg;
+            var item = document.createElement('li');
+            item.appendChild(img);
+            messages.appendChild(item);
+            window.scrollTo(0, document.body.scrollHeight);
+        });
     </script>
 </body>
 

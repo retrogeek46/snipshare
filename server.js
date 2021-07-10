@@ -13,9 +13,10 @@ const io = socket(server, {
     },
 });
 
-// app.get("/", (req, res) => {
-//     res.sendFile(__dirname + "/index.html");
-// });
+app.get("/", (req, res) => {
+    res.sendFile(__dirname + "/index.html");
+    // res.send('hello');
+});
 
 io.on("connection", (socket) => {
     console.log("a user connected");
