@@ -72,7 +72,7 @@ createTray = () => {
 }
 
 app.on('ready', () => {
-    console.log('App Running');
+    // console.log('App Running');
     const globalShortcutRegister = globalShortcut.register("Ctrl+Alt+9", () => {
         sendSnip();
     });
