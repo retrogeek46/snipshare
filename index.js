@@ -10,7 +10,7 @@ createMainWindow = () => {
     let win = new BrowserWindow({
         width: 900,
         height: 493,
-        icon: path.join(__dirname, 'cloud_fun.ico'),
+        icon: path.join(__dirname, 'cut-paper.png'),
         transparent: true,
         resizable: false,
         webPreferences: {
@@ -54,7 +54,7 @@ sendSnip = () => {
 }
 
 createTray = () => {
-    let appIcon = new Tray(path.join(__dirname, "cloud_fun.ico"));
+    let appIcon = new Tray(path.join(__dirname, "cut-paper.png"));
     const contextMenu = Menu.buildFromTemplate([
         { label: 'Send Snippet', click: function () {sendSnip()} },
         { label: 'Exit', click: function () {
