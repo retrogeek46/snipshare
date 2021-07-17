@@ -1,6 +1,6 @@
 {
   "name": "snipshare",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "This is the desktop client and server for SnipShare tool",
   "main": "app/index.js",
   "scripts": {
@@ -33,7 +33,7 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "snipshare"
+            "name": "SnipShare"
           }
         },
         {
