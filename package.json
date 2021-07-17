@@ -28,7 +28,12 @@
   },
   "config": {
     "forge": {
-      "packagerConfig": {},
+      "packagerConfig": {
+        "name": "SnipShare",
+        "productName": "SnipShare",
+        "executableName": "SnipShare",
+        "icon": "app/Resources/icon.ico"
+      },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
