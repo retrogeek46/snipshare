@@ -12,7 +12,7 @@ createMainWindow = () => {
     let win = new BrowserWindow({
         width: 900,
         height: 493,
-        icon: path.join(__dirname, 'cut-paper.png'),
+        icon: path.join(__dirname, '/Resources/cut-paper.png'),
         transparent: true,
         resizable: false,
         webPreferences: {
@@ -84,7 +84,7 @@ sendSnip = () => {
 }
 
 createTray = () => {
-    let appIcon = new Tray(path.join(__dirname, "cut-paper.png"));
+    let appIcon = new Tray(path.join(__dirname, "/Resources/cut-paper.png"));
     const contextMenu = Menu.buildFromTemplate([
         { label: 'Send Snippet', click: function () {sendSnip()} },
         { label: 'Exit', click: function () {
