@@ -1,6 +1,8 @@
+const { NativeImage } = require('electron');
 const electron = require('electron');
 const path = require("path");
 const server = require("./server.js");
+var ImageJS = require("imagejs");
 const { app, BrowserWindow, Tray, Menu, dialog, clipboard, globalShortcut } =
     electron;
 
@@ -33,6 +35,29 @@ createMainWindow = () => {
     return win;
 }
 
+RotateImage = (imageToRotate) => {
+    let { width, height } = imageToRotate.getSize();
+    let imageBmp = imageToRotate.getBitmap()
+    if (width > height) {
+        imageBmp = new ImageJS.Bitmap({
+            width: width,
+            height: height,
+            data: imageToRotate.getBitmap(),
+        });
+        imageBmp = imageBmp.rotate({ degrees: 270 , fit: "pad"});
+        height = imageBmp._data.height; 
+        width = imageBmp._data.width;
+
+        const nativeImage = require("electron").nativeImage;
+        return nativeImage.createFromBitmap(imageBmp._data.data, {
+            width: width,
+            height: height,
+        });
+    } else {
+        return imageToRotate;
+    }
+};
+
 sendSnip = () => {
     let clipboardImage = clipboard.readImage();
     if (clipboardImage.isEmpty()) {
@@ -43,13 +68,18 @@ sendSnip = () => {
         };
         dialog.showMessageBox(null, errorOptions);
     } else {
-        // const successOptions = {
-        //     buttons: ["OK"],
-        //     title: "Data Sent",
-        //     message: "Data sent successfully",
-        // };
-        // dialog.showMessageBox(null, successOptions);
-        server.emitMessage('snipShare', clipboardImage.toDataURL());
+        // rotate image
+        try {
+            let rotatedImage = RotateImage(clipboardImage);
+            server.emitMessage("snipShare", rotatedImage.toDataURL());
+        } catch (err) {
+            const errorOptions = {
+                buttons: ["OK"],
+                title: "Unhandled Exception",
+                message: err.toString(),
+            };
+            dialog.showMessageBox(null, errorOptions);
+        }
     }
 }
 
@@ -72,7 +102,6 @@ createTray = () => {
 }
 
 app.on('ready', () => {
-    // console.log('App Running');
     const globalShortcutRegister = globalShortcut.register("Ctrl+Alt+9", () => {
         sendSnip();
     });
