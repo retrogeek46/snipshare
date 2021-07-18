@@ -1,8 +1,8 @@
-# SnipShare
 <p align="center">
 <img src="app/Resources/cut-paper.png" width="250" height="250"/>
 </p>
 
+# SnipShare
 SnipShare is a small tool to quickly share snippets from a desktop environment to mobile so that your handheld device can act as a second monitor for static image content.
 
 This project is for the desktop app + server and is built using ElectronJS for desktop application, ExpressJS/NodeJS for server and Socket.io for sending realtime data.
