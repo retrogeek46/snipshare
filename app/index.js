@@ -31,7 +31,12 @@ createMainWindow = () => {
             text-align:center; 
             font-family: 'JetBrains Mono', 'Courier New'; 
             color: white;
-            font-size:300%;">The node server is running at ${serverIP}</p>`,
+            font-size:120%;
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);">The webpage is hosted at ${serverIP}</p>`,
         "</body>",
     ].join("");
     win.loadURL("data:text/html;charset=utf-8," + encodeURI(windowContent));
