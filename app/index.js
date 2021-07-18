@@ -11,8 +11,8 @@ let mainWindow;
 createMainWindow = () => {
     let win = new BrowserWindow({
         width: 900,
-        height: 493,
-        icon: path.join(__dirname, '/Resources/cut-paper.png'),
+        height: 480,
+        icon: path.join(__dirname, "/Resources/cut-paper.png"),
         transparent: true,
         resizable: false,
         webPreferences: {
@@ -21,7 +21,21 @@ createMainWindow = () => {
         autoHideMenuBar: true,
         center: true,
         thickFrame: true,
+        backgroundColor: "#2e2c29",
     });
+
+    const serverIP = server.getServerIP();
+    const windowContent = [
+        "<body>",
+        `<p style="
+            text-align:center; 
+            font-family: 'JetBrains Mono', 'Courier New'; 
+            color: white;
+            font-size:300%;">The node server is running at ${serverIP}</p>`,
+        "</body>",
+    ].join("");
+    win.loadURL("data:text/html;charset=utf-8," + encodeURI(windowContent));
+
     let tray = null;
     win.on('minimize', function (event) {
         event.preventDefault();
@@ -106,7 +120,7 @@ app.on('ready', () => {
         sendSnip();
     });
     mainWindow = createMainWindow();
-    mainWindow.minimize();
+    // mainWindow.minimize();
 });
 
 app.on('will-quit', () => {

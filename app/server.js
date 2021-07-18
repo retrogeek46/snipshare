@@ -15,7 +15,17 @@ const io = socket(server, {
     },
 });
 
-getServerIP = () => {
+app.get("/", (req, res) => {
+    res.sendFile(__dirname + "/index.html");
+});
+
+exports.emitMessage = (tag, message) => {
+    io.emit(tag, message)
+}
+
+const port = 3456;
+
+exports.getServerIP = () => {
     const nets = networkInterfaces();
     const results = Object.create(null); // Or just '{}', an empty object
 
@@ -30,30 +40,9 @@ getServerIP = () => {
             }
         }
     }
-    return results["Ethernet"][0]
+    return results["Ethernet"][0] + ":" + String(port);
 }
-
-app.get("/", (req, res) => {
-    res.sendFile(__dirname + "/index.html");
-    // res.send('hello');
-});
-
-// io.on("connection", (socket) => {
-//     // console.log("a user connected");
-//     // socket.on("disconnect", () => {
-//         // console.log("user disconnected");
-//     // });
-//     // socket.on("snipShare", (msg) => {
-//         // console.log("message: " + msg);
-//     // });
-// });
-
-exports.emitMessage = (tag, message) => {
-    io.emit(tag, message)
-}
-
-const port = 3456;
 
 server.listen(port, () => {
-    console.log("listening on " + getServerIP() + ":" + String(port));
+    console.log("listening on " + this.getServerIP());
 });
