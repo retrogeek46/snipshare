@@ -2,6 +2,7 @@
 <img src="app/Resources/cut-paper.png" width="250" height="250"/>
 </p>
 
+![](https://img.shields.io/twitter/follow/retrogeek46?style=social)
 # SnipShare
 SnipShare is a small tool to quickly share snippets from a desktop environment to mobile so that your handheld device can act as a second monitor for static image content.
 
