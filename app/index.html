@@ -26,7 +26,7 @@
 </head>
 
 <body>
-    <img id = "image" alt="example">
+    <img id = "image" style="visibility: hidden;">
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
@@ -34,6 +34,7 @@
 
         socket.on('snipShare', function (msg) {
             image.src = msg;
+            image.style.visibility = "visible";
         });
     </script>
 </body>
