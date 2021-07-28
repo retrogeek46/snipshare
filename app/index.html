@@ -14,7 +14,7 @@
         }
 
         #image {
-            width:100%;
+            /* width:100%; */
             height: 100%;
 
             position: absolute;
@@ -24,21 +24,48 @@
             right: 0;
             bottom: 0;
         }
+
+        #clipboardShare {
+            position:relative;
+            left: 50%;
+            margin-top:50%;
+        }
     </style>
 </head>
 
 <body>
     <img id = "image" style="visibility: hidden;">
+    <button id = "clipboardShare" type="button">Share clipboard content</button>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
         var socket = io();
 
-        socket.on('snipShare', function (msg) {
+        socket.on('snipShare', (msg) => {
+            // console.log("received message");
             image.src = msg;
             image.style.visibility = "visible";
         });
+
+        clipboardShare.addEventListener('click', function(e) {
+            navigator.permissions.query({ name: "clipboard-read" }).then((result) => {
+                if (result.state == "granted" || result.state == "prompt") {
+                    navigator.clipboard.read().then((data) => {
+                        for (let i = 0; i < data.length; i++) {
+                            if (!data[i].types.includes("image/png")) {
+                                console.log("Clipboard contains non-image data. Unable to access it.");
+                            } else {
+                                data[i].getType("image/png").then((blob) => {
+                                    socket.emit("fromClient", URL.createObjectURL(blob))
+                                });
+                            }
+                        }
+                    });
+                } else {
+                    console.log("Cannot access clipboard");
+                }
+            });
+        });
     </script>
 </body>
-
 </html>

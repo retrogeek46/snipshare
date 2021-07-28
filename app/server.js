@@ -1,18 +1,31 @@
 const { networkInterfaces } = require("os");
 const express = require("express");
 const cors = require("cors");
-const http = require("http");
+const https = require("https");
+const fs = require("fs");
 const app = express();
 app.use(cors());
 
+const key = fs.readFileSync(__dirname + "/../ssl_cert/key.pem");
+const cert = fs.readFileSync(__dirname + "/../ssl_cert/cert.pem");
+const options = {
+    key: key,
+    cert: cert,
+};
 
-const server = http.createServer(app);
+const server = https.createServer(options, app);
 const socket = require("socket.io");
 const io = socket(server, {
     cors: {
-        origin: "http://localhost:3444",
+        origin: "https://localhost:3444",
         methods: ["GET", "POST"],
-    },
+    }
+});
+
+io.on("connection", (socket) => {
+    socket.on("fromClient", (msg) => {
+        this.emitMessage("snipShare", msg);
+    });
 });
 
 app.get("/", (req, res) => {

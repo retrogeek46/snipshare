@@ -89,7 +89,8 @@ sendSnip = () => {
     } else {
         // rotate image
         try {
-            let rotatedImage = RotateImage(clipboardImage);
+            let rotatedImage = clipboardImage;
+            // let rotatedImage = RotateImage(clipboardImage);
             server.emitMessage("snipShare", rotatedImage.toDataURL());
         } catch (err) {
             const errorOptions = {
