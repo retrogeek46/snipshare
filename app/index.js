@@ -5,6 +5,7 @@ const server = require("./server.js");
 var ImageJS = require("imagejs");
 const { app, BrowserWindow, Tray, Menu, dialog, clipboard, globalShortcut } =
     electron;
+const nativeImage = require("electron").nativeImage;
 
 let mainWindow;
 
@@ -67,7 +68,6 @@ RotateImage = (imageToRotate) => {
         height = imageBmp._data.height; 
         width = imageBmp._data.width;
 
-        const nativeImage = require("electron").nativeImage;
         return nativeImage.createFromBitmap(imageBmp._data.data, {
             width: width,
             height: height,
@@ -132,3 +132,7 @@ app.on('ready', () => {
 app.on('will-quit', () => {
     globalShortcut.unregisterAll();
 })
+
+// exports.createImageFromBuffer = (buffer) => {
+//     return nativeImage.createFromBuffer(buffer);
+// };

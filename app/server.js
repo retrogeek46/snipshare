@@ -4,6 +4,7 @@ const cors = require("cors");
 const https = require("https");
 const fs = require("fs");
 const app = express();
+const nativeImage = require("electron").nativeImage;
 app.use(cors());
 
 const key = fs.readFileSync(__dirname + "/../ssl_cert/key.pem");
@@ -24,7 +25,10 @@ const io = socket(server, {
 
 io.on("connection", (socket) => {
     socket.on("fromClient", (msg) => {
-        this.emitMessage("snipShare", msg);
+        console.log(msg);
+        // create native image from buffer
+        let img = nativeImage.createFromBuffer(msg);
+        this.emitMessage("snipShare", img.toDataURL());
     });
 });
 

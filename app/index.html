@@ -25,11 +25,11 @@
             bottom: 0;
         }
 
-        #clipboardShare {
-            position:relative;
-            left: 50%;
-            margin-top:50%;
-        }
+        /* #clipboardShare {
+            position:absolute;
+            left: 42%;
+            margin-top:135%;
+        } */
     </style>
 </head>
 
@@ -42,24 +42,44 @@
         var socket = io();
 
         socket.on('snipShare', (msg) => {
-            // console.log("received message");
+            console.log("received message");
             image.src = msg;
             image.style.visibility = "visible";
         });
 
         clipboardShare.addEventListener('click', function(e) {
+            console.log("button pressed");
+
+            // socket.emit("fromClient", "message")
+
             navigator.permissions.query({ name: "clipboard-read" }).then((result) => {
+                // console.log("abc");
                 if (result.state == "granted" || result.state == "prompt") {
+                    // console.log(navigator);
+                    // console.log(result);
+                    // console.log(navigator.clipboard);
                     navigator.clipboard.read().then((data) => {
+                        console.log(data);
                         for (let i = 0; i < data.length; i++) {
-                            if (!data[i].types.includes("image/png")) {
-                                console.log("Clipboard contains non-image data. Unable to access it.");
-                            } else {
-                                data[i].getType("image/png").then((blob) => {
-                                    socket.emit("fromClient", URL.createObjectURL(blob))
+                            for (const type of data[i].types) {
+                                data[i].getType(type).then((blob) => {
+                                    console.log(blob);
+                                    socket.emit("fromClient", blob)
                                 });
                             }
+
+
+                            // if (!data[i].types.includes("image/png")) {
+                            //     console.log("Clipboard contains non-image data. Unable to access it.");
+                            // } else {
+                            //     data[i].getType("image/png").then((blob) => {
+                            //         alert("hello");
+                            //         socket.emit("fromClient", URL.createObjectURL(blob))
+                            //     });
+                            // }
                         }
+                    }).catch((err) => {
+                        console.log(err);
                     });
                 } else {
                     console.log("Cannot access clipboard");
