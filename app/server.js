@@ -1,7 +1,8 @@
 const { networkInterfaces } = require("os");
 const express = require("express");
 const cors = require("cors");
-const https = require("https");
+// const https = require("https");
+const http = require("http");
 const fs = require("fs");
 const app = express();
 const nativeImage = require("electron").nativeImage;
@@ -14,7 +15,8 @@ const options = {
     cert: cert,
 };
 
-const server = https.createServer(options, app);
+// const server = https.createServer(options, app);
+const server = http.createServer(app);
 const socket = require("socket.io");
 const io = socket(server, {
     cors: {
@@ -25,11 +27,13 @@ const io = socket(server, {
 
 io.on("connection", (socket) => {
     socket.on("fromClient", (msg) => {
-        console.log(msg);
         // create native image from buffer
-        let img = nativeImage.createFromBuffer(msg);
+        let img = nativeImage.createFromDataURL(msg);
         this.emitMessage("snipShare", img.toDataURL());
     });
+    // socket.onAny((event, ...args) => {
+    //     console.log(`got ${event}`);
+    // });
 });
 
 app.get("/", (req, res) => {
