@@ -127,6 +127,10 @@ app.on('ready', () => {
     });
     mainWindow = createMainWindow();
     // mainWindow.minimize();
+
+    // const nodeAbi = require("node-abi");
+    // console.log(nodeAbi.getAbi("14.16.1", "node"));
+
 });
 
 app.on('will-quit', () => {

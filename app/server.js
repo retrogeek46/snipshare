@@ -6,6 +6,16 @@ const http = require("http");
 const fs = require("fs");
 const app = express();
 const nativeImage = require("electron").nativeImage;
+const {
+    keyboard,
+    Key,
+    mouse,
+    left,
+    right,
+    up,
+    down,
+    screen,
+} = require("@nut-tree/nut-js");
 app.use(cors());
 
 const key = fs.readFileSync(__dirname + "/../ssl_cert/key.pem");
@@ -25,16 +35,19 @@ const io = socket(server, {
     }
 });
 
-io.on("connection", (socket) => {
+io.on("connection", async (socket) =>  {
     socket.on("fromClient", (msg) => {
         // create native image from buffer
         let img = nativeImage.createFromDataURL(msg);
         this.emitMessage("snipShare", img.toDataURL());
     });
-    // socket.onAny((event, ...args) => {
-    //     console.log(`got ${event}`);
-    // });
+    socket.onAny( async (event, ...args) => {
+        console.log(`got ${event}`);
+        await mouse.move(right(500));
+    });
 });
+
+// moveMouse = async () => {}
 
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/index.html");
