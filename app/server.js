@@ -36,21 +36,30 @@ const io = socket(server, {
 });
 
 io.on("connection", async (socket) =>  {
-    socket.on("fromClient", (msg) => {
+    socket.on("fromWeb", (msg) => {
         // create native image from buffer
         let img = nativeImage.createFromDataURL(msg);
         this.emitMessage("snipShare", img.toDataURL());
     });
-    socket.onAny( async (event, ...args) => {
-        console.log(`got ${event}`);
-        await mouse.move(right(500));
+    socket.on("fromAndroid", async (msg) => {
+        // create native image from buffer
+        console.log(`got ${msg}`);
+        await keyboard.type(Key[Number(msg)])
     });
+    // socket.onAny( async (event, ...args) => {
+    //     console.log(`got ${event}`);
+    //     // await mouse.move(right(500));
+    // });
 });
 
 // moveMouse = async () => {}
 
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/index.html");
+});
+
+app.get("/connect", (req, res) => {
+    res.send("hi");
 });
 
 exports.emitMessage = (tag, message) => {
