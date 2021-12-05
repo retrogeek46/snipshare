@@ -46,10 +46,10 @@ io.on("connection", async (socket) =>  {
         console.log(`got ${msg}`);
         await keyboard.type(Key[Number(msg)])
     });
-    // socket.onAny( async (event, ...args) => {
-    //     console.log(`got ${event}`);
-    //     // await mouse.move(right(500));
-    // });
+    socket.onAny( async (event, ...args) => {
+        console.log(`got ${event}`);
+        await mouse.move(right(500));
+    });
 });
 
 // moveMouse = async () => {}
