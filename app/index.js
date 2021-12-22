@@ -55,6 +55,26 @@ createMainWindow = () => {
     return win;
 }
 
+createDrawWindow = () => {
+    console.log("Creating draw window");
+
+    let win = new BrowserWindow({
+        width: 400,
+        height: 400,
+        icon: path.join(__dirname, "/Resources/cut-paper.png"),
+        // transparent: true,
+        frame: false,
+        alwaysOnTop: true,
+        backgroundColor: "#2e2c29",
+        opacity: 0.25
+    });
+
+    win.setIgnoreMouseEvents(true);
+    win.setFocusable(false);
+
+    return win
+};
+
 RotateImage = (imageToRotate) => {
     let { width, height } = imageToRotate.getSize();
     let imageBmp = imageToRotate.getBitmap()
@@ -111,7 +131,8 @@ createTray = () => {
                 app.isQuitting = true;
                 app.quit();
             }
-        }
+        },
+        { label: 'Show Draw Window', click: function () { createDrawWindow() }}
     ]);
     appIcon.on('double-click', (event) => {
         mainWindow.show();
