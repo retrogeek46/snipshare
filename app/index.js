@@ -9,7 +9,7 @@ const nativeImage = require("electron").nativeImage;
 
 let mainWindow;
 
-createMainWindow = () => {
+const createMainWindow = () => {
     let win = new BrowserWindow({
         width: 900,
         height: 480,
@@ -55,12 +55,12 @@ createMainWindow = () => {
     return win;
 }
 
-createDrawWindow = () => {
+const createDrawWindow = (height, width) => {
     console.log("Creating draw window");
 
     let win = new BrowserWindow({
-        width: 400,
-        height: 400,
+        width: width,
+        height: height,
         icon: path.join(__dirname, "/Resources/cut-paper.png"),
         // transparent: true,
         frame: false,
@@ -75,7 +75,7 @@ createDrawWindow = () => {
     return win
 };
 
-RotateImage = (imageToRotate) => {
+const RotateImage = (imageToRotate) => {
     let { width, height } = imageToRotate.getSize();
     let imageBmp = imageToRotate.getBitmap()
     if (width > height) {
@@ -97,7 +97,7 @@ RotateImage = (imageToRotate) => {
     }
 };
 
-sendSnip = () => {
+const sendSnip = () => {
     let clipboardImage = clipboard.readImage();
     if (clipboardImage.isEmpty()) {
         const errorOptions = {
@@ -123,7 +123,7 @@ sendSnip = () => {
     }
 }
 
-createTray = () => {
+const createTray = () => {
     let appIcon = new Tray(path.join(__dirname, "/Resources/cut-paper.png"));
     const contextMenu = Menu.buildFromTemplate([
         { label: 'Send Snippet', click: function () {sendSnip()} },
@@ -142,7 +142,8 @@ createTray = () => {
     return appIcon;
 }
 
-app.on('ready', () => {
+app.on('ready', async () => {
+    await server.server(this);
     const globalShortcutRegister = globalShortcut.register("Ctrl+Alt+9", () => {
         sendSnip();
     });
@@ -157,6 +158,15 @@ app.on('ready', () => {
 app.on('will-quit', () => {
     globalShortcut.unregisterAll();
 })
+
+exports.initDrawWindow = (height, width) => {
+    console.log(`height is ${height}, width is ${width}`);
+    createDrawWindow(height, width);
+};
+
+// exports.testMethod = (msg) => {
+//     console.log(`received ${msg}`);
+// }
 
 // exports.createImageFromBuffer = (buffer) => {
 //     return nativeImage.createFromBuffer(buffer);
