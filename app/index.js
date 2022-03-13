@@ -26,6 +26,7 @@ const createMainWindow = () => {
     });
 
     const serverIP = server.getServerIP();
+    const windowMsg = serverIP != "" ? "The webpage is hosted at " + serverIP : "Cannot get serverIP";
     const windowContent = [
         "<body>",
         `<p style="
@@ -37,7 +38,7 @@ const createMainWindow = () => {
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);">The webpage is hosted at ${serverIP}</p>`,
+            transform: translate(-50%, -50%);">${windowMsg}</p>`,
         "</body>",
     ].join("");
     win.loadURL("data:text/html;charset=utf-8," + encodeURI(windowContent));

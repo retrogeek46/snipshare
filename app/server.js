@@ -95,21 +95,35 @@ const server = async (electronObj) => {
     const port = 3456;
 
     exports.getServerIP = () => {
-        const nets = networkInterfaces();
-        const results = Object.create(null); // Or just '{}', an empty object
+        try {
+            const nets = networkInterfaces();
+            const results = Object.create(null); // Or just '{}', an empty object
 
-        for (const name of Object.keys(nets)) {
-            for (const net of nets[name]) {
-                // Skip over non-IPv4 and internal (i.e. 127.0.0.1) addresses
-                if (net.family === "IPv4" && !net.internal) {
-                    if (!results[name]) {
-                        results[name] = [];
+            for (const name of Object.keys(nets)) {
+                for (const net of nets[name]) {
+                    // Skip over non-IPv4 and internal (i.e. 127.0.0.1) addresses
+                    if (net.family === "IPv4" && !net.internal) {
+                        if (!results[name]) {
+                            results[name] = [];
+                        }
+                        results[name].push(net.address);
                     }
-                    results[name].push(net.address);
                 }
             }
+            // console.log(results);
+            if (!("Ethernet" in results)) {
+                // console.log(results[0][0]);
+                return (
+                    results["vEthernet (New Virtual Switch)"][0] +
+                    ":" +
+                    String(port)
+                );
+            }
+                return results["Ethernet"][0] + ":" + String(port);
+        } catch (ex) {
+            console.log(ex);
+            return "";
         }
-        return results["Ethernet"][0] + ":" + String(port);
     };
 
     server.listen(port, () => {
