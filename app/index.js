@@ -2,9 +2,9 @@ const { NativeImage } = require('electron');
 const electron = require('electron');
 const path = require("path");
 const server = require("./server.js");
+const keyboard = require("./keyboard.js");
 var ImageJS = require("imagejs");
-const { app, BrowserWindow, Tray, Menu, dialog, clipboard, globalShortcut } =
-    electron;
+const { app, BrowserWindow, Tray, Menu, dialog, clipboard, globalShortcut } = electron;
 const nativeImage = require("electron").nativeImage;
 
 let mainWindow;
@@ -27,8 +27,19 @@ const createMainWindow = () => {
 
     const serverIP = server.getServerIP();
     const windowMsg = serverIP != "" ? "The webpage is hosted at " + serverIP : "Cannot get serverIP";
+    const versionMsg = "Current Version: " + process.env.npm_package_version;
     const windowContent = [
         "<body>",
+        `<p style="
+            text-align:center; 
+            font-family: 'JetBrains Mono', 'Courier New'; 
+            color: white;
+            font-size:90%;
+            margin: 0;
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);">${versionMsg}</p>`,
         `<p style="
             text-align:center; 
             font-family: 'JetBrains Mono', 'Courier New'; 
@@ -124,6 +135,10 @@ const sendSnip = () => {
     }
 }
 
+const sendEncoderStateChange = () => {
+    keyboard.updateKeyboard();
+}
+
 const createTray = () => {
     let appIcon = new Tray(path.join(__dirname, "/Resources/cut-paper.png"));
     const contextMenu = Menu.buildFromTemplate([
@@ -145,9 +160,12 @@ const createTray = () => {
 
 app.on('ready', async () => {
     await server.server(this);
-    const globalShortcutRegister = globalShortcut.register("Ctrl+Alt+9", () => {
+    const sendSnipRegister = globalShortcut.register("Ctrl+Alt+9", () => {
         sendSnip();
     });
+    const qmkRawHidRegister = globalShortcut.register("Ctrl+Alt+8", () => {
+        sendEncoderStateChange();
+    }); 
     mainWindow = createMainWindow();
     // mainWindow.minimize();
 
