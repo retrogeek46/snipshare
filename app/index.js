@@ -139,6 +139,10 @@ const sendEncoderStateChange = () => {
     keyboard.updateKeyboard();
 }
 
+const getEncoderState = () => {
+    keyboard.getEncoderState();
+}
+
 const createTray = () => {
     let appIcon = new Tray(path.join(__dirname, "/Resources/cut-paper.png"));
     const contextMenu = Menu.buildFromTemplate([
@@ -163,9 +167,12 @@ app.on('ready', async () => {
     const sendSnipRegister = globalShortcut.register("Ctrl+Alt+9", () => {
         sendSnip();
     });
-    const qmkRawHidRegister = globalShortcut.register("Ctrl+Alt+8", () => {
+    const qmkUpdateEncoderRegister = globalShortcut.register("Ctrl+Alt+8", async () => {
         sendEncoderStateChange();
-    }); 
+    });
+    // const qmkGetEncoderRegister = globalShortcut.register("Ctrl+Alt+7", async () => {
+    //     getEncoderState();
+    // });
     mainWindow = createMainWindow();
     // mainWindow.minimize();
 
