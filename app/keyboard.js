@@ -42,7 +42,7 @@ const connectKeyboard = async () => {
 
 const attachDataListener = async () => {
     console.log("attaching data listener");
-    keyboard.on("data", async (val) => {
+    keyboard.on("data", (val) => {
         // console.log(
         //     val[0] + " " + val[32] +
         //     val[1] + " " + val[33] +
@@ -94,10 +94,10 @@ const attachErrorListener = () => {
     errorListenerAttached = true;
 };
 
-exports.updateKeyboard = () => {
+exports.updateKeyboard = async () => {
     try {
         if (!keyboard) {
-            connectKeyboard();
+            await connectKeyboard();
         }
         keyboard.write([1, 10]);
         return 1;
@@ -124,24 +124,3 @@ exports.getEncoderState = async () => {
         return 0;
     }
 }
-
-const readline = require("readline");
-readline.emitKeypressEvents(process.stdin);
-process.stdin.setRawMode(true);
-
-process.stdin.on('keypress', (str, key) => {
-    if (key.ctrl && key.name === 'c') {
-        process.exit();
-    } else {
-        // console.log(`You pressed the "${str}" key`);
-        // console.log();
-        // console.log(key);
-        // console.log();
-        this.getEncoderState();
-    }
-});
-// while (true) {
-//     // if () {
-//     //     this.getEncoderState();
-//     // }
-// }
