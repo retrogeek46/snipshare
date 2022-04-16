@@ -1,18 +1,19 @@
 const hid = require("node-hid");
 
 const KEYBOARD_NAME = "GMMK Pro";
-const KEYBOARD_USAGE_ID = 0x61;
-const KEYBOARD_USAGE_PAGE = 0xff60;
+const KEYBOARD_USAGE_PAGE = 65376;
+const KEYBOARD_USAGE_ID = 97;
 const KEYBOARD_UPDATE_TIME = 1000;
 
 let keyboard = null;
 let dataListenerAttached = false;
 
 
-const connectKeyboard = async () => {
-    console.log("connect keyboard called");
+const connectKeyboard = () => {
+    // console.log("connect keyboard called");
     if (!keyboard) {
         const devices = hid.devices();
+        // console.log(devices);
         for (const d of devices) {
             if (
                 d.product === KEYBOARD_NAME &&
@@ -20,8 +21,8 @@ const connectKeyboard = async () => {
                 d.usagePage === KEYBOARD_USAGE_PAGE
             ) {
                 keyboard = new hid.HID(d.path);
-                // console.log(keyboard.getFeatureReport());
-                await attachDataListener();
+                console.log("Keyboard connected");
+                attachDataListener();
 
                 // keyboard.on("data", (e) => {
                 //     console.log(e[0]);
@@ -40,7 +41,7 @@ const connectKeyboard = async () => {
     }
 };
 
-const attachDataListener = async () => {
+const attachDataListener = () => {
     console.log("attaching data listener");
     keyboard.on("data", (val) => {
         // console.log(
@@ -94,23 +95,23 @@ const attachErrorListener = () => {
     errorListenerAttached = true;
 };
 
-exports.updateKeyboard = async () => {
+exports.updateKeyboard = () => {
     try {
         if (!keyboard) {
-            await connectKeyboard();
+            connectKeyboard();
         }
         keyboard.write([1, 10]);
         return 1;
-    } catch {
+    } catch (ex) {
         return 0;
     }
 }
 
-exports.getEncoderState = async () => {
+exports.getEncoderState = () => {
     let encoderState = null;
     try {
         if (!keyboard) {
-            await connectKeyboard();
+            connectKeyboard();
         }
         // if (!dataListenerAttached) {
         //     attachDataListener()
@@ -120,7 +121,7 @@ exports.getEncoderState = async () => {
         // }
         keyboard.write([1, 11]);
         return encoderState;
-    } catch {
+    } catch (ex) {
         return 0;
     }
 }

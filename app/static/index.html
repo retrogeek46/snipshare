@@ -25,6 +25,10 @@
             bottom: 0;
         }
 
+        #systemInfoText {
+            color: white;
+        }
+
         /* #clipboardShare {
             position:absolute;
             left: 42%;
@@ -36,6 +40,7 @@
 <body>
     <img id = "image" style="visibility: hidden;">
     <button id = "clipboardShare" type="button">Share clipboard content</button>
+    <p id = "systemInfoText"></p>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
@@ -44,6 +49,12 @@
         socket.on('snipShare', (msg) => {
             console.log("received message");
             image.src = msg;
+            image.style.visibility = "visible";
+        });
+
+        socket.on('systemInfo', (msg) => {
+            //console.log("received system info message" + msg);
+            document.getElementById("systemInfoText").innerText = msg;
             image.style.visibility = "visible";
         });
 

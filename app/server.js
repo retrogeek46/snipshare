@@ -6,17 +6,8 @@ const http = require("http");
 const fs = require("fs");
 const app = express();
 const nativeImage = require("electron").nativeImage;
-const {
-    keyboard,
-    Key,
-    mouse,
-    Point,
-    left,
-    right,
-    up,
-    down,
-    screen,
-} = require("@nut-tree/nut-js");
+const { keyboard, Key, mouse, Point, left, right, up, down, screen } = require("@nut-tree/nut-js");
+const systemInfo = require("./services/systemMonitor.js");
 
 app.use(cors());
 
@@ -26,6 +17,9 @@ const options = {
     key: key,
     cert: cert,
 };
+
+const systemInfoInterval = 2000;
+let systemInfoTimer = null;
 
 const server = async (electronObj) => {
     // const server = https.createServer(options, app);
@@ -80,8 +74,35 @@ const server = async (electronObj) => {
         // });
     });
 
+    exports.startSystemInfoTimer = async () => {
+        console.log("Starting system info timer");
+        systemInfoTimer = setInterval(async () => {
+            const systemData = await systemInfo.getSystemInfo();
+            // console.log(systemData);
+            const systemInfoValues =
+                systemData["HKCU\\SOFTWARE\\HWiNFO64\\VSB"]["values"];
+            const msg = `CPU Voltage: ${systemInfoValues["Value2"]["value"]}`;
+            console.log(msg);
+            this.emitMessage("systemInfo", msg);
+        }, systemInfoInterval);
+    }
+
+    exports.stopSystemInfoTimer = () => {
+        console.log("Stopping system info timer");
+        clearInterval(systemInfoTimer);
+    }
+
+    // exports.startSystemInfoTimer = async () => {
+    //     const systemData = await systemInfo.getSystemInfo();
+    //     // console.log(systemData);
+    //     const systemInfoValues = systemData["HKCU\\SOFTWARE\\HWiNFO64\\VSB"]["values"];
+    //     const msg = `CPU Voltage: ${systemInfoValues["Value2"]["value"]}`;
+    //     console.log(msg);
+    //     this.emitMessage("systemInfo", msg);
+    // };
+
     app.get("/", (req, res) => {
-        res.sendFile(__dirname + "/index.html");
+        res.sendFile(__dirname + "/static/index.html");
     });
 
     app.get("/connect", (req, res) => {

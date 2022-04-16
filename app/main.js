@@ -2,7 +2,7 @@ const { NativeImage } = require('electron');
 const electron = require('electron');
 const path = require("path");
 const server = require("./server.js");
-const keyboard = require("./keyboard.js");
+const keyboard = require("./services/keyboard.js");
 var ImageJS = require("imagejs");
 const { app, BrowserWindow, Tray, Menu, dialog, clipboard, globalShortcut } = electron;
 const nativeImage = require("electron").nativeImage;
@@ -27,7 +27,7 @@ const createMainWindow = () => {
 
     const serverIP = server.getServerIP();
     const windowMsg = serverIP != "" ? "The webpage is hosted at " + serverIP : "Cannot get serverIP";
-    const versionMsg = "Current Version: " + process.env.npm_package_version;
+    const versionMsg = "Current Version: " + app.getVersion();
     const windowContent = [
         "<body>",
         `<p style="
@@ -143,16 +143,40 @@ const getEncoderState = () => {
     keyboard.getEncoderState();
 }
 
-const createTray = () => {
+const createTray = async () => {
     let appIcon = new Tray(path.join(__dirname, "/Resources/cut-paper.png"));
     const contextMenu = Menu.buildFromTemplate([
-        { label: 'Send Snippet', click: function () {sendSnip()} },
-        { label: 'Exit', click: function () {
+        {
+            label: "Send Snippet",
+            click: function () {
+                sendSnip();
+            },
+        },
+        {
+            label: "Show Draw Window",
+            click: function () {
+                createDrawWindow();
+            },
+        },
+        {
+            label: "Start sending System Info",
+            click: async function () {
+                await server.startSystemInfoTimer();
+            },
+        },
+        {
+            label: "Stop sending System Info",
+            click: function () {
+                server.stopSystemInfoTimer();
+            },
+        },
+        {
+            label: "Exit",
+            click: function () {
                 app.isQuitting = true;
                 app.quit();
-            }
+            },
         },
-        { label: 'Show Draw Window', click: function () { createDrawWindow() }}
     ]);
     appIcon.on('double-click', (event) => {
         mainWindow.show();
@@ -164,15 +188,22 @@ const createTray = () => {
 
 app.on('ready', async () => {
     await server.server(this);
+    await server.startSystemInfoTimer();
     const sendSnipRegister = globalShortcut.register("Ctrl+Alt+9", () => {
         sendSnip();
     });
     const qmkUpdateEncoderRegister = globalShortcut.register("Ctrl+Alt+8", async () => {
         sendEncoderStateChange();
     });
-    // const qmkGetEncoderRegister = globalShortcut.register("Ctrl+Alt+7", async () => {
-    //     getEncoderState();
-    // });
+    const qmkGetEncoderRegister = globalShortcut.register("Ctrl+Alt+7", async () => {
+        getEncoderState();
+    });
+    const startSystemInfoTimer = globalShortcut.register("Ctrl+Alt+6", async () => {
+        await server.startSystemInfoTimer();
+    });
+    const stopSystemInfoTimer = globalShortcut.register("Ctrl+Alt+5", async () => {
+        server.stopSystemInfoTimer();
+    });
     mainWindow = createMainWindow();
     // mainWindow.minimize();
 
