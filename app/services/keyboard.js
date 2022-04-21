@@ -22,7 +22,7 @@ const connectKeyboard = () => {
             ) {
                 keyboard = new hid.HID(d.path);
                 console.log("Keyboard connected");
-                attachDataListener();
+                // attachDataListener();
 
                 // keyboard.on("data", (e) => {
                 //     console.log(e[0]);
@@ -95,12 +95,12 @@ const attachErrorListener = () => {
     errorListenerAttached = true;
 };
 
-exports.updateKeyboard = () => {
+exports.updateKeyboard = (value) => {
     try {
         if (!keyboard) {
             connectKeyboard();
         }
-        keyboard.write([1, 10]);
+        keyboard.write([1, value]);
         return 1;
     } catch (ex) {
         return 0;

@@ -8,6 +8,7 @@ const app = express();
 const nativeImage = require("electron").nativeImage;
 const { keyboard, Key, mouse, Point, left, right, up, down, screen } = require("@nut-tree/nut-js");
 const systemInfo = require("./services/systemMonitor.js");
+const keyboardQmk = require("./services/keyboard.js");
 
 app.use(cors());
 
@@ -79,9 +80,19 @@ const server = async (electronObj) => {
         systemInfoTimer = setInterval(async () => {
             const systemData = await systemInfo.getSystemInfo();
             // console.log(systemData);
-            const systemInfoValues =
-                systemData["HKCU\\SOFTWARE\\HWiNFO64\\VSB"]["values"];
-            const msg = `CPU Voltage: ${systemInfoValues["Value2"]["value"]}`;
+            const systemInfoValues = systemData["HKCU\\SOFTWARE\\HWiNFO64\\VSB"]["values"];
+            // console.log(systemData["HKCU\\SOFTWARE\\HWiNFO64\\VSB"]);
+
+            let cpuVoltage = systemInfoValues["Value2"]["value"];
+            let cpuTempRaw = systemInfoValues["ValueRaw4"]["value"];
+            let cpuTemp = cpuTempRaw.toString() + "C";
+            if (Number(cpuTempRaw) > 60) {
+                keyboardQmk.updateKeyboard(12);
+            } else {
+                keyboardQmk.updateKeyboard(13);
+            }
+            // let cpuVoltage = systemInfoValues["Value2"]["value"];
+            const msg = `CPU Temp: ${cpuTemp}, CPU Voltage: ${cpuVoltage}`;
             console.log(msg);
             this.emitMessage("systemInfo", msg);
         }, systemInfoInterval);

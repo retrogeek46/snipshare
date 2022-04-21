@@ -136,7 +136,7 @@ const sendSnip = () => {
 }
 
 const sendEncoderStateChange = () => {
-    keyboard.updateKeyboard();
+    keyboard.updateKeyboard(10);
 }
 
 const getEncoderState = () => {
