@@ -9,6 +9,7 @@ const nativeImage = require("electron").nativeImage;
 const { keyboard, Key, mouse, Point, left, right, up, down, screen } = require("@nut-tree/nut-js");
 const systemInfo = require("./services/systemMonitor.js");
 const keyboardQmk = require("./services/keyboard.js");
+const logger = require("./utils/logger");
 
 app.use(cors());
 
@@ -19,7 +20,7 @@ const options = {
     cert: cert,
 };
 
-const systemInfoInterval = 2000;
+const systemInfoInterval = 500;
 let systemInfoTimer = null;
 
 const server = async (electronObj) => {
@@ -38,10 +39,10 @@ const server = async (electronObj) => {
 
     io.on("connection", async (socket) => {
         socket.on("disconnect", (msg) => {
-            console.log(socket.id + " disconnected due to " + msg);
+            logger.info(socket.id + " disconnected due to " + msg);
         });
         socket.on("connected", (msg) => {
-            console.log(`got ${msg}, client connected`);
+            logger.info(`got ${msg}, client connected`);
         });
         socket.on("fromWeb", (msg) => {
             // create native image from buffer
@@ -50,65 +51,68 @@ const server = async (electronObj) => {
         });
         socket.on("fromAndroid", async (msg) => {
             // create native image from buffer
-            console.log(`got ${msg}`);
+            logger.info(`got ${msg}`);
             await keyboard.type(Key[Number(msg)]);
         });
         socket.on("startDraw", async (msg) => {
-            console.log(msg);
+            logger.info(msg);
             const height = msg.split("|")[0];
             const width = msg.split("|")[1];
             electronObj.initDrawWindow(height, width);
         });
         socket.on("draw", async (msg) => {
-            // console.log(msg);
+            // logger.info(msg);
             let currentPos = await mouse.getPosition();
             const x = currentPos.x - parseFloat(msg.split("|")[0]);
             const y = currentPos.y - parseFloat(msg.split("|")[1]);
-            // console.log(`x: ${x}, y: ${y}`);
+            // logger.info(`x: ${x}, y: ${y}`);
             // await mouse.move([new Point(x, y)]);
             await mouse.drag([new Point(x, y)]);
             // electronObj.testMethod(`x: ${x}, y: ${y}`)
         });
         // socket.onAny(async (event, ...args) => {
-        //     console.log(`got ${event}`);
+        //     logger.info(`got ${event}`);
         //     // await mouse.move(right(500));
         // });
     });
 
     exports.startSystemInfoTimer = async () => {
-        console.log("Starting system info timer");
+        logger.info("Starting system info timer");
         systemInfoTimer = setInterval(async () => {
             const systemData = await systemInfo.getSystemInfo();
-            // console.log(systemData);
+            // logger.info(systemData);
             const systemInfoValues = systemData["HKCU\\SOFTWARE\\HWiNFO64\\VSB"]["values"];
-            // console.log(systemData["HKCU\\SOFTWARE\\HWiNFO64\\VSB"]);
+            // logger.info(systemData["HKCU\\SOFTWARE\\HWiNFO64\\VSB"]);
 
             let cpuVoltage = systemInfoValues["Value2"]["value"];
             let cpuTempRaw = systemInfoValues["ValueRaw4"]["value"];
+            let cpuUsageRaw = systemInfoValues["ValueRaw3"]["value"];
             let cpuTemp = cpuTempRaw.toString() + "C";
+            let cpuUsage = cpuUsageRaw.toString() + "%";
             if (Number(cpuTempRaw) > 60) {
                 keyboardQmk.updateKeyboard(12);
             } else {
                 keyboardQmk.updateKeyboard(13);
             }
+            keyboardQmk.updateKeyboard(14,parseInt(cpuUsageRaw));
             // let cpuVoltage = systemInfoValues["Value2"]["value"];
-            const msg = `CPU Temp: ${cpuTemp}, CPU Voltage: ${cpuVoltage}`;
-            console.log(msg);
+            const msg = `CPU Temp: ${cpuTemp}, CPU Voltage: ${cpuVoltage}, CPU Usage: ${cpuUsage}`;
+            // logger.sysinfo(msg);
             this.emitMessage("systemInfo", msg);
         }, systemInfoInterval);
     }
 
     exports.stopSystemInfoTimer = () => {
-        console.log("Stopping system info timer");
+        logger.info("Stopping system info timer");
         clearInterval(systemInfoTimer);
     }
 
     // exports.startSystemInfoTimer = async () => {
     //     const systemData = await systemInfo.getSystemInfo();
-    //     // console.log(systemData);
+    //     // logger.info(systemData);
     //     const systemInfoValues = systemData["HKCU\\SOFTWARE\\HWiNFO64\\VSB"]["values"];
     //     const msg = `CPU Voltage: ${systemInfoValues["Value2"]["value"]}`;
-    //     console.log(msg);
+    //     logger.info(msg);
     //     this.emitMessage("systemInfo", msg);
     // };
 
@@ -142,9 +146,9 @@ const server = async (electronObj) => {
                     }
                 }
             }
-            // console.log(results);
+            // logger.info(results);
             if (!("Ethernet" in results)) {
-                // console.log(results[0][0]);
+                // logger.info(results[0][0]);
                 return (
                     results["vEthernet (New Virtual Switch)"][0] +
                     ":" +
@@ -153,13 +157,13 @@ const server = async (electronObj) => {
             }
                 return results["Ethernet"][0] + ":" + String(port);
         } catch (ex) {
-            console.log(ex);
+            logger.error(ex);
             return "";
         }
     };
 
     server.listen(port, () => {
-        console.log("listening on " + this.getServerIP());
+        logger.info("listening on " + this.getServerIP());
     });
 };
 

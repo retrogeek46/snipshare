@@ -58,3 +58,5 @@ out/
 ssl_cert/
 
 build/
+
+logs/

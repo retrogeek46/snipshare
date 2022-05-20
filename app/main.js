@@ -1,3 +1,4 @@
+require("dotenv").config();
 const { NativeImage } = require('electron');
 const electron = require('electron');
 const path = require("path");
@@ -6,6 +7,8 @@ const keyboard = require("./services/keyboard.js");
 var ImageJS = require("imagejs");
 const { app, BrowserWindow, Tray, Menu, dialog, clipboard, globalShortcut } = electron;
 const nativeImage = require("electron").nativeImage;
+const logger = require("./utils/logger");
+const utils = require("./utils/utils");
 
 let mainWindow;
 
@@ -68,7 +71,7 @@ const createMainWindow = () => {
 }
 
 const createDrawWindow = (height, width) => {
-    console.log("Creating draw window");
+    logger.info("Creating draw window");
 
     let win = new BrowserWindow({
         width: width,
@@ -187,29 +190,41 @@ const createTray = async () => {
 }
 
 app.on('ready', async () => {
+    utils.clearLogs(app.getAppPath());
     await server.server(this);
     await server.startSystemInfoTimer();
     const sendSnipRegister = globalShortcut.register("Ctrl+Alt+9", () => {
         sendSnip();
     });
-    const qmkUpdateEncoderRegister = globalShortcut.register("Ctrl+Alt+8", async () => {
-        sendEncoderStateChange();
-    });
-    const qmkGetEncoderRegister = globalShortcut.register("Ctrl+Alt+7", async () => {
-        getEncoderState();
-    });
-    const startSystemInfoTimer = globalShortcut.register("Ctrl+Alt+6", async () => {
-        await server.startSystemInfoTimer();
-    });
-    const stopSystemInfoTimer = globalShortcut.register("Ctrl+Alt+5", async () => {
-        server.stopSystemInfoTimer();
-    });
+    const qmkUpdateEncoderRegister = globalShortcut.register(
+        "Ctrl+Alt+8",
+        async () => {
+            sendEncoderStateChange();
+        }
+    );
+    const qmkGetEncoderRegister = globalShortcut.register(
+        "Ctrl+Alt+7",
+        async () => {
+            getEncoderState();
+        }
+    );
+    const startSystemInfoTimer = globalShortcut.register(
+        "Ctrl+Alt+6",
+        async () => {
+            await server.startSystemInfoTimer();
+        }
+    );
+    const stopSystemInfoTimer = globalShortcut.register(
+        "Ctrl+Alt+5",
+        async () => {
+            server.stopSystemInfoTimer();
+        }
+    );
     mainWindow = createMainWindow();
     // mainWindow.minimize();
 
     // const nodeAbi = require("node-abi");
-    // console.log(nodeAbi.getAbi("14.16.1", "node"));
-
+    // logger.info(nodeAbi.getAbi("14.16.1", "node"));
 });
 
 app.on('will-quit', () => {
@@ -217,12 +232,12 @@ app.on('will-quit', () => {
 })
 
 exports.initDrawWindow = (height, width) => {
-    console.log(`height is ${height}, width is ${width}`);
+    logger.info(`height is ${height}, width is ${width}`);
     createDrawWindow(height, width);
 };
 
 // exports.testMethod = (msg) => {
-//     console.log(`received ${msg}`);
+//     logger.info(`received ${msg}`);
 // }
 
 // exports.createImageFromBuffer = (buffer) => {

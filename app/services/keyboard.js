@@ -10,10 +10,10 @@ let dataListenerAttached = false;
 
 
 const connectKeyboard = () => {
-    // console.log("connect keyboard called");
+    // logger.info("connect keyboard called");
     if (!keyboard) {
         const devices = hid.devices();
-        // console.log(devices);
+        // logger.info(devices);
         for (const d of devices) {
             if (
                 d.product === KEYBOARD_NAME &&
@@ -21,15 +21,15 @@ const connectKeyboard = () => {
                 d.usagePage === KEYBOARD_USAGE_PAGE
             ) {
                 keyboard = new hid.HID(d.path);
-                console.log("Keyboard connected");
+                logger.info("Keyboard connected");
                 // attachDataListener();
 
                 // keyboard.on("data", (e) => {
-                //     console.log(e[0]);
+                //     logger.info(e[0]);
                 //     // Check that the data is a valid screen index and update the current one
                 //     if (e[0] >= 1 && e[0] <= screens.length) {
                 //         currentScreenIndex = e[0] - 1;
-                //         console.log(
+                //         logger.info(
                 //             `Keyboard requested screen index: ${currentScreenIndex}`
                 //         );
                 //     }
@@ -42,9 +42,9 @@ const connectKeyboard = () => {
 };
 
 const attachDataListener = () => {
-    console.log("attaching data listener");
+    logger.info("attaching data listener");
     keyboard.on("data", (val) => {
-        // console.log(
+        // logger.info(
         //     val[0] + " " + val[32] +
         //     val[1] + " " + val[33] +
         //     val[2] + " " + val[34] +
@@ -79,10 +79,10 @@ const attachDataListener = () => {
         //     val[31] + " " + val[63] +
         //     + " asdf " + val[64] + " " + new Date()
         // );
-        console.log(val[0] + " " + new Date());
+        logger.info(val[0] + " " + new Date());
         // if (val[0] >= 1) {
         //     encoderState = val[0];
-        //     console.log(`Received data: ${encoderState}`);
+        //     logger.info(`Received data: ${encoderState}`);
         // }
     });
     dataListenerAttached = true;
@@ -90,17 +90,20 @@ const attachDataListener = () => {
 
 const attachErrorListener = () => {
     keyboard.on("error", (val) => {
-        console.log(val[0] + " " + new Date());
+        logger.info(val[0] + " " + new Date());
     });
     errorListenerAttached = true;
 };
 
-exports.updateKeyboard = (value) => {
+exports.updateKeyboard = (value, extraValues=0) => {
     try {
         if (!keyboard) {
             connectKeyboard();
         }
-        keyboard.write([1, value]);
+        if (extraValues == null) {
+            extraValues = 0
+        }
+        keyboard.write([1, value, extraValues]);
         return 1;
     } catch (ex) {
         return 0;

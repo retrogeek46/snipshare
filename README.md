@@ -21,5 +21,10 @@ You can download the latest portable win32-64 version of the app from the [Relea
 - The snippet should be visible in your device now.
   <p align="center"><img src="app/Resources/snippet%20in%20device.jpg" width="200"/></p>
 
+## Development
+- Clone this repo
+- Install npm packages with `npm i`
+- Start server with `npm start`
+
 ## Attributions
 <div><a href="https://www.flaticon.com/free-icon/cut-paper_4225062">Icon</a> made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>

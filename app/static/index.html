@@ -47,19 +47,19 @@
         var socket = io();
 
         socket.on('snipShare', (msg) => {
-            console.log("received message");
+            logger.info("received message");
             image.src = msg;
             image.style.visibility = "visible";
         });
 
         socket.on('systemInfo', (msg) => {
-            //console.log("received system info message" + msg);
+            //logger.info("received system info message" + msg);
             document.getElementById("systemInfoText").innerText = msg;
             image.style.visibility = "visible";
         });
 
         clipboardShare.addEventListener('click', function(e) {
-            console.log("button pressed");
+            logger.info("button pressed");
 
             socket.emit("fromWeb", "message")
         });
