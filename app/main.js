@@ -1,4 +1,3 @@
-require("dotenv").config();
 const { NativeImage } = require('electron');
 const electron = require('electron');
 const path = require("path");

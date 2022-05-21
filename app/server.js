@@ -10,6 +10,7 @@ const { keyboard, Key, mouse, Point, left, right, up, down, screen } = require("
 const systemInfo = require("./services/systemMonitor.js");
 const keyboardQmk = require("./services/keyboard.js");
 const logger = require("./utils/logger");
+const constants = require("./utils/constants");
 
 app.use(cors());
 
@@ -20,7 +21,7 @@ const options = {
     cert: cert,
 };
 
-const systemInfoInterval = 500;
+const systemInfoInterval = constants.SYSTEM_INFO_INTERVAL;
 let systemInfoTimer = null;
 
 const server = async (electronObj) => {
@@ -34,8 +35,8 @@ const server = async (electronObj) => {
         },
     });
 
-    mouse.config.autoDelayMs = 1;
-    // mouse.config.mouseSpeed = 500;
+    mouse.config.autoDelayMs = constants.MOUSE_AUTO_DELAY_MS;
+    // mouse.config.mouseSpeed = constants.MOUSE_SPEED;
 
     io.on("connection", async (socket) => {
         socket.on("disconnect", (msg) => {
@@ -81,7 +82,8 @@ const server = async (electronObj) => {
         systemInfoTimer = setInterval(async () => {
             const systemData = await systemInfo.getSystemInfo();
             // logger.info(systemData);
-            const systemInfoValues = systemData["HKCU\\SOFTWARE\\HWiNFO64\\VSB"]["values"];
+            const systemInfoValues =
+                systemData["HKCU\\SOFTWARE\\HWiNFO64\\VSB"]["values"];
             // logger.info(systemData["HKCU\\SOFTWARE\\HWiNFO64\\VSB"]);
 
             let cpuVoltage = systemInfoValues["Value2"]["value"];
@@ -94,18 +96,18 @@ const server = async (electronObj) => {
             } else {
                 keyboardQmk.updateKeyboard(13);
             }
-            keyboardQmk.updateKeyboard(14,parseInt(cpuUsageRaw));
+            keyboardQmk.updateKeyboard(14, parseInt(cpuUsageRaw));
             // let cpuVoltage = systemInfoValues["Value2"]["value"];
             const msg = `CPU Temp: ${cpuTemp}, CPU Voltage: ${cpuVoltage}, CPU Usage: ${cpuUsage}`;
             // logger.sysinfo(msg);
             this.emitMessage("systemInfo", msg);
         }, systemInfoInterval);
-    }
+    };
 
     exports.stopSystemInfoTimer = () => {
         logger.info("Stopping system info timer");
         clearInterval(systemInfoTimer);
-    }
+    };
 
     // exports.startSystemInfoTimer = async () => {
     //     const systemData = await systemInfo.getSystemInfo();
@@ -155,7 +157,7 @@ const server = async (electronObj) => {
                     String(port)
                 );
             }
-                return results["Ethernet"][0] + ":" + String(port);
+            return results["Ethernet"][0] + ":" + String(port);
         } catch (ex) {
             logger.error(ex);
             return "";

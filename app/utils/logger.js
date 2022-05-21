@@ -1,3 +1,4 @@
+const constants = require("./constants");
 const winston = require("winston");
 
 const levels = {
@@ -41,7 +42,7 @@ const transports = [
     }),
     new winston.transports.File({
         // filename: "logs/systemInfo.log",
-        filename: process.env.SYSINFO_PATH,
+        filename: constants.SYSINFO_PATH,
         level: "sysinfo",
     }),
     new winston.transports.File({
