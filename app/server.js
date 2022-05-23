@@ -119,7 +119,7 @@ const server = async (electronObj) => {
     // };
 
     app.get("/", (req, res) => {
-        res.sendFile(__dirname + "/static/index.html");
+        res.sendFile(__dirname + "/static/snipShare.html");
     });
 
     app.get("/connect", (req, res) => {
