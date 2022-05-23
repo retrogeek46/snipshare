@@ -20,41 +20,16 @@ const createMainWindow = () => {
         resizable: false,
         webPreferences: {
             nodeIntegration: true,
+            contextIsolation: false,
+            enableRemoteModule: true
         },
         autoHideMenuBar: true,
         center: true,
         thickFrame: true,
         backgroundColor: "#2e2c29",
     });
-
-    const serverIP = server.getServerIP();
-    const windowMsg = serverIP != "" ? "The webpage is hosted at " + serverIP : "Cannot get serverIP";
-    const versionMsg = "Current Version: " + app.getVersion();
-    const windowContent = [
-        "<body>",
-        `<p style="
-            text-align:center; 
-            font-family: 'JetBrains Mono', 'Courier New'; 
-            color: white;
-            font-size:90%;
-            margin: 0;
-            position: absolute;
-            top: 30%;
-            left: 50%;
-            transform: translate(-50%, -50%);">${versionMsg}</p>`,
-        `<p style="
-            text-align:center; 
-            font-family: 'JetBrains Mono', 'Courier New'; 
-            color: white;
-            font-size:120%;
-            margin: 0;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);">${windowMsg}</p>`,
-        "</body>",
-    ].join("");
-    win.loadURL("data:text/html;charset=utf-8," + encodeURI(windowContent));
+    
+    win.loadFile(path.join(__dirname, 'static/index.html'))
 
     let tray = null;
     win.on('minimize', function (event) {
@@ -192,6 +167,8 @@ app.on('ready', async () => {
     utils.clearLogs(app.getAppPath());
     await server.server(this);
     await server.startSystemInfoTimer();
+    global.serverIP = server.getServerIP();
+    global.appVersion = app.getVersion();
     const sendSnipRegister = globalShortcut.register("Ctrl+Alt+9", () => {
         sendSnip();
     });
@@ -220,6 +197,7 @@ app.on('ready', async () => {
         }
     );
     mainWindow = createMainWindow();
+    // mainWindow.webContents.openDevTools();
     // mainWindow.minimize();
 
     // const nodeAbi = require("node-abi");
