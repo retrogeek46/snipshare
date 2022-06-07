@@ -14,10 +14,12 @@
   "license": "ISC",
   "dependencies": {
     "@nut-tree/nut-js": "^1.7.0",
+    "compression": "^1.7.4",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "electron-squirrel-startup": "^1.0.0",
     "express": "^4.17.1",
+    "helmet": "^5.1.0",
     "imagejs": "^0.0.9",
     "node-hid": "^2.1.1",
     "regedit": "^5.0.0",

@@ -11,8 +11,18 @@ const systemInfo = require("./services/systemMonitor.js");
 const keyboardQmk = require("./services/keyboard.js");
 const logger = require("./utils/logger");
 const constants = require("./utils/constants");
+const helmet = require("helmet");
+const compression = require("compression");
 
 app.use(cors());
+app.use(express.json({ limit: "50mb", extended: true }));
+app.use(
+    express.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 })
+);
+app.use(helmet());
+app.use(compression());
+
+app.set("json spaces", 4);
 
 const key = fs.readFileSync(__dirname + "/../ssl_cert/key.pem");
 const cert = fs.readFileSync(__dirname + "/../ssl_cert/cert.pem");
@@ -34,6 +44,8 @@ const server = async (electronObj) => {
             methods: ["GET", "POST"],
         },
     });
+    // TODO: this should be an enum instead of string
+    let currentBarrierOS = "windows";
 
     mouse.config.autoDelayMs = constants.MOUSE_AUTO_DELAY_MS;
     // mouse.config.mouseSpeed = constants.MOUSE_SPEED;
@@ -124,6 +136,22 @@ const server = async (electronObj) => {
 
     app.get("/connect", (req, res) => {
         res.send("hi");
+    });
+
+    app.post("/updateActiveWin", (req, res) => {
+        // const windowTitle = res.body.window;
+        const windowTitle = req.body.windowTitle;
+        logger.info(windowTitle);
+        if (windowTitle == "BarrierDesk" && currentBarrierOS == "windows") {
+            currentBarrierOS = "macos"
+            logger.info("updating keyboard, going to mac");
+            keyboardQmk.updateKeyboard(10);
+        } else if (currentBarrierOS == "macos") {
+            currentBarrierOS = "windows";
+            logger.info("updating keyboard, going to windows");
+            keyboardQmk.updateKeyboard(10);
+        }
+        res.send("received");
     });
 
     exports.emitMessage = (tag, message) => {
