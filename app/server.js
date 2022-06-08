@@ -144,11 +144,11 @@ const server = async (electronObj) => {
         logger.info(windowTitle);
         if (windowTitle == "BarrierDesk" && currentBarrierOS == "windows") {
             currentBarrierOS = "macos"
-            logger.info("updating keyboard, going to mac");
+            logger.info("updating keyboard layer, switching to mac");
             keyboardQmk.updateKeyboard(10);
         } else if (currentBarrierOS == "macos") {
             currentBarrierOS = "windows";
-            logger.info("updating keyboard, going to windows");
+            logger.info("updating keyboard layer, switching to windows");
             keyboardQmk.updateKeyboard(10);
         }
         res.send("received");
