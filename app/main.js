@@ -4,7 +4,7 @@ const path = require("path");
 const server = require("./server.js");
 const keyboard = require("./services/keyboard.js");
 var ImageJS = require("imagejs");
-const { app, BrowserWindow, Tray, Menu, dialog, clipboard, globalShortcut } = electron;
+const { app, BrowserWindow, Tray, Menu, dialog, clipboard, globalShortcut, ipcMain } = electron;
 const nativeImage = require("electron").nativeImage;
 const logger = require("./utils/logger");
 const utils = require("./utils/utils");
@@ -211,6 +211,11 @@ app.on('will-quit', () => {
 exports.initDrawWindow = (height, width) => {
     logger.info(`height is ${height}, width is ${width}`);
     createDrawWindow(height, width);
+};
+
+exports.updateCurrentOS = (currentOS) => {
+    console.log("in ipc Main");
+    mainWindow.webContents.send("updateCurrentOS", currentOS);
 };
 
 // exports.testMethod = (msg) => {

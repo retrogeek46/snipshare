@@ -1,6 +1,6 @@
 const systemInfo = require("../services/systemMonitor.js");
 const constants = require("../utils/constants.js");
-const { remote } = require("electron");
+const { remote, ipcRenderer } = require("electron");
 
 let cpuVoltage = "";
 let cpuTempRaw = "";
@@ -11,6 +11,7 @@ let cpuUsage = "";
 const versionPara = document.getElementById("versionPara");
 const ipAddressPara = document.getElementById("ipAddressPara");
 const cpuParamsPara = document.getElementById("cpuParamsPara");
+const currentOSPara = document.getElementById("currentOS");
 
 const serverIP = remote.getGlobal("serverIP");
 const appVersion = remote.getGlobal("appVersion");
@@ -22,8 +23,6 @@ ipAddressPara.innerText =
         : "Cannot get serverIP";
 
 const startSystemInfoUITimer = async () => {
-    // logger.info("Starting system info UI timer");
-    // console.log("Starting system info UI timer");
     systemInfoUITimer = setInterval(async () => {
         const systemData = await systemInfo.getSystemInfo();
         const systemInfoValues = systemData["HKCU\\SOFTWARE\\HWiNFO64\\VSB"]["values"];
@@ -43,6 +42,11 @@ const stopSystemInfoUITimer = () => {
     console.log("Stopping system info UI timer");
     clearInterval(systemInfoUITimer);
 };
+
+ipcRenderer.on("updateCurrentOS", (event, currentOS) => {
+    console.log("in ipc renderer");
+    currentOSPara.innerHTML = "Current OS: " + currentOS;
+});
 
 startSystemInfoUITimer();
 
