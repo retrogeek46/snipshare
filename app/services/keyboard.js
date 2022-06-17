@@ -103,7 +103,7 @@ exports.updateKeyboard = (value, extraValues=0) => {
         if (extraValues == null) {
             extraValues = 0
         }
-        keyboard.write([1, value, extraValues]);
+        keyboard.write([1, 10, value, extraValues]);
         return 1;
     } catch (ex) {
         return 0;
@@ -127,4 +127,9 @@ exports.getEncoderState = () => {
     } catch (ex) {
         return 0;
     }
+}
+
+exports.resetKeyboard = () => {
+    console.log("reset keyboard connection");
+    keyboard = null;
 }

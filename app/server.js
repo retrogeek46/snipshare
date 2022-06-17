@@ -103,12 +103,12 @@ const server = async (electronObj) => {
             let cpuUsageRaw = systemInfoValues["ValueRaw3"]["value"];
             let cpuTemp = cpuTempRaw.toString() + "C";
             let cpuUsage = cpuUsageRaw.toString() + "%";
-            if (Number(cpuTempRaw) > 60) {
-                keyboardQmk.updateKeyboard(12);
-            } else {
-                keyboardQmk.updateKeyboard(13);
-            }
-            keyboardQmk.updateKeyboard(14, parseInt(cpuUsageRaw));
+            // if (Number(cpuTempRaw) > 60) {
+            //     keyboardQmk.updateKeyboard(3);
+            // } else {
+            //     keyboardQmk.updateKeyboard(4);
+            // }
+            keyboardQmk.updateKeyboard(5, parseInt(cpuUsageRaw));
             // let cpuVoltage = systemInfoValues["Value2"]["value"];
             const msg = `CPU Temp: ${cpuTemp}, CPU Voltage: ${cpuVoltage}, CPU Usage: ${cpuUsage}`;
             // logger.sysinfo(msg);
@@ -145,12 +145,12 @@ const server = async (electronObj) => {
         if (windowTitle == "BarrierDesk" && currentBarrierOS == "windows") {
             currentBarrierOS = "macos"
             logger.info("updating keyboard layer, switching to mac");
-            keyboardQmk.updateKeyboard(10);
+            keyboardQmk.updateKeyboard(6, 1);
             electronObj.updateCurrentOS(currentBarrierOS)
         } else if (currentBarrierOS == "macos") {
             currentBarrierOS = "windows";
             logger.info("updating keyboard layer, switching to windows");
-            keyboardQmk.updateKeyboard(10);
+            keyboardQmk.updateKeyboard(6, 0);
             electronObj.updateCurrentOS(currentBarrierOS);
         }
         res.send("received");

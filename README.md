@@ -8,6 +8,15 @@ SnipShare is a small tool to quickly share snippets from a desktop environment t
 
 This project is for the desktop app + server and is built using ElectronJS for desktop application, ExpressJS/NodeJS for server and Socket.io for sending realtime data.
 
+### QMK
+- The code communicates with QMK using raw-hid protocol. All messages are sent with id 10 with type of message being described by the integer at next index in the buffer.
+    - 1: toggle encoder state
+    - 2: fetch current encoder state (does not work)
+    - 3: set cpu temp rgb to low (not being used)
+    - 4: set cpu temp rgb to high (not being used)
+    - 5: set cpu usage rgb (send current usage at next index in buffer)
+    - 6: set current OS rgb (send current OS at next index in buffer)
+
 ## Installation
 You can download the latest portable win32-64 version of the app from the [Releases](https://github.com/retrogeek46/snipshare/releases) page
 

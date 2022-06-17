@@ -113,11 +113,19 @@ const sendSnip = () => {
 }
 
 const sendEncoderStateChange = () => {
-    keyboard.updateKeyboard(10);
+    keyboard.updateKeyboard(1);
 }
 
 const getEncoderState = () => {
     keyboard.getEncoderState();
+}
+
+const resetKeyboard = () => {
+    keyboard.resetKeyboard();
+}
+
+const updateCurrentOS = () => {
+    keyboard.updateKeyboard(6, 1);
 }
 
 const createTray = async () => {
@@ -172,6 +180,12 @@ app.on('ready', async () => {
     const sendSnipRegister = globalShortcut.register("Ctrl+Alt+9", () => {
         sendSnip();
     });
+    const qmkUpdateOSRegister = globalShortcut.register(
+        "Ctrl+Alt+0",
+        async () => {
+            updateCurrentOS();
+        }
+    );
     const qmkUpdateEncoderRegister = globalShortcut.register(
         "Ctrl+Alt+8",
         async () => {
@@ -181,7 +195,8 @@ app.on('ready', async () => {
     const qmkGetEncoderRegister = globalShortcut.register(
         "Ctrl+Alt+7",
         async () => {
-            getEncoderState();
+            // getEncoderState();
+            resetKeyboard();
         }
     );
     const startSystemInfoTimer = globalShortcut.register(
