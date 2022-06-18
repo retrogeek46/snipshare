@@ -44,7 +44,7 @@ const stopSystemInfoUITimer = () => {
 };
 
 ipcRenderer.on("updateCurrentOS", (event, currentOS) => {
-    console.log("in ipc renderer");
+    // console.log("in ipc renderer");
     currentOSPara.innerHTML = "Current OS: " + currentOS;
 });
 

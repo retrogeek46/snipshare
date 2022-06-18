@@ -180,12 +180,12 @@ app.on('ready', async () => {
     const sendSnipRegister = globalShortcut.register("Ctrl+Alt+9", () => {
         sendSnip();
     });
-    const qmkUpdateOSRegister = globalShortcut.register(
-        "Ctrl+Alt+0",
-        async () => {
-            updateCurrentOS();
-        }
-    );
+    // const qmkUpdateOSRegister = globalShortcut.register(
+    //     "Ctrl+Alt+0",
+    //     async () => {
+    //         updateCurrentOS();
+    //     }
+    // );
     const qmkUpdateEncoderRegister = globalShortcut.register(
         "Ctrl+Alt+8",
         async () => {
@@ -229,7 +229,7 @@ exports.initDrawWindow = (height, width) => {
 };
 
 exports.updateCurrentOS = (currentOS) => {
-    console.log("in ipc Main");
+    // console.log("in ipc Main");
     mainWindow.webContents.send("updateCurrentOS", currentOS);
 };
 

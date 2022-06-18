@@ -1,4 +1,5 @@
 const hid = require("node-hid");
+const logger = require("../utils/logger");
 
 const KEYBOARD_NAME = "GMMK Pro";
 const KEYBOARD_USAGE_PAGE = 65376;
@@ -106,6 +107,8 @@ exports.updateKeyboard = (value, extraValues=0) => {
         keyboard.write([1, 10, value, extraValues]);
         return 1;
     } catch (ex) {
+        logger.info(ex);
+        this.resetKeyboard();
         return 0;
     }
 }
@@ -125,11 +128,12 @@ exports.getEncoderState = () => {
         keyboard.write([1, 11]);
         return encoderState;
     } catch (ex) {
+        this.resetKeyboard();
         return 0;
     }
 }
 
 exports.resetKeyboard = () => {
-    console.log("reset keyboard connection");
+    logger.info("reset keyboard connection");
     keyboard = null;
 }
