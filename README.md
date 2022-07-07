@@ -34,6 +34,7 @@ You can download the latest portable win32-64 version of the app from the [Relea
 - Clone this repo
 - Install npm packages with `npm i`
 - Start server with `npm start`
+- Build installable binaries with `npm run make`
 
 ## Attributions
 <div><a href="https://www.flaticon.com/free-icon/cut-paper_4225062">Icon</a> made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>

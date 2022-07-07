@@ -8,8 +8,11 @@ const { app, BrowserWindow, Tray, Menu, dialog, clipboard, globalShortcut, ipcMa
 const nativeImage = require("electron").nativeImage;
 const logger = require("./utils/logger");
 const utils = require("./utils/utils");
+const spawn = require("child_process").spawn;
+// const kill = require("tree-kill");
 
 let mainWindow;
+let activeWinProcess;
 
 const createMainWindow = () => {
     let win = new BrowserWindow({
@@ -171,6 +174,11 @@ const createTray = async () => {
     return appIcon;
 }
 
+const spawnActiveWinProcess = () => {
+    const activeWin = spawn('cd E:/Coding/C#/ActiveWinTest && dotnet run Program.cs', { shell: true })
+    return activeWin
+}
+
 app.on('ready', async () => {
     utils.clearLogs(app.getAppPath());
     await server.server(this);
@@ -180,12 +188,15 @@ app.on('ready', async () => {
     const sendSnipRegister = globalShortcut.register("Ctrl+Alt+9", () => {
         sendSnip();
     });
-    // const qmkUpdateOSRegister = globalShortcut.register(
-    //     "Ctrl+Alt+0",
-    //     async () => {
-    //         updateCurrentOS();
-    //     }
-    // );
+    activeWinProcess = spawnActiveWinProcess();
+
+    const qmkUpdateOSRegister = globalShortcut.register(
+        "Ctrl+Alt+0",
+        () => {
+            // kill(activeWinProcess.pid);
+            activeWinProcess.kill("SIGKILL")
+        }
+    );
     const qmkUpdateEncoderRegister = globalShortcut.register(
         "Ctrl+Alt+8",
         async () => {
@@ -212,6 +223,7 @@ app.on('ready', async () => {
         }
     );
     mainWindow = createMainWindow();
+
     // mainWindow.webContents.openDevTools();
     // mainWindow.minimize();
 
@@ -221,6 +233,7 @@ app.on('ready', async () => {
 
 app.on('will-quit', () => {
     globalShortcut.unregisterAll();
+    activeWinProcess.kill("SIGKILL");
 })
 
 exports.initDrawWindow = (height, width) => {
