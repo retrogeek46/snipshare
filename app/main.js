@@ -9,7 +9,7 @@ const nativeImage = require("electron").nativeImage;
 const logger = require("./utils/logger");
 const utils = require("./utils/utils");
 const spawn = require("child_process").spawn;
-// const kill = require("tree-kill");
+const kill = require("tree-kill");
 
 let mainWindow;
 let activeWinProcess;
@@ -128,7 +128,7 @@ const resetKeyboard = () => {
 }
 
 const updateCurrentOS = () => {
-    keyboard.updateKeyboard(6, 1);
+    keyboard.updateKeyboard(4, 1);
 }
 
 const createTray = async () => {
@@ -175,8 +175,13 @@ const createTray = async () => {
 }
 
 const spawnActiveWinProcess = () => {
-    const activeWin = spawn('cd E:/Coding/C#/ActiveWinTest && dotnet run Program.cs', { shell: true })
-    return activeWin
+    activeWinProcess = spawn('cd E:/Coding/C#/ActiveWinTest && dotnet run Program.cs', { shell: true })
+}
+
+const killActiveWinProcess = () => {
+    if (activeWinProcess != null) {
+        kill(activeWinProcess.pid);
+    }
 }
 
 app.on('ready', async () => {
@@ -188,13 +193,13 @@ app.on('ready', async () => {
     const sendSnipRegister = globalShortcut.register("Ctrl+Alt+9", () => {
         sendSnip();
     });
-    activeWinProcess = spawnActiveWinProcess();
+    // TODO: handle active win so that it is optional 
+    spawnActiveWinProcess();
 
     const qmkUpdateOSRegister = globalShortcut.register(
         "Ctrl+Alt+0",
         () => {
-            // kill(activeWinProcess.pid);
-            activeWinProcess.kill("SIGKILL")
+            killActiveWinProcess();
         }
     );
     const qmkUpdateEncoderRegister = globalShortcut.register(
@@ -233,8 +238,12 @@ app.on('ready', async () => {
 
 app.on('will-quit', () => {
     globalShortcut.unregisterAll();
-    activeWinProcess.kill("SIGKILL");
+    killActiveWinProcess();
 })
+
+ipcMain.on("applyKeyboardRGB", (event, message) => {
+    keyboard.updateKeyboard(5, [message["r"], message["g"], message["b"]]);
+});
 
 exports.initDrawWindow = (height, width) => {
     logger.info(`height is ${height}, width is ${width}`);

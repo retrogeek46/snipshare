@@ -108,7 +108,7 @@ const server = async (electronObj) => {
             // } else {
             //     keyboardQmk.updateKeyboard(4);
             // }
-            keyboardQmk.updateKeyboard(5, parseInt(cpuUsageRaw));
+            keyboardQmk.updateKeyboard(3, parseInt(cpuUsageRaw));
             // let cpuVoltage = systemInfoValues["Value2"]["value"];
             const msg = `CPU Temp: ${cpuTemp}, CPU Voltage: ${cpuVoltage}, CPU Usage: ${cpuUsage}`;
             // logger.sysinfo(msg);
@@ -145,12 +145,12 @@ const server = async (electronObj) => {
         if (windowTitle == "BarrierDesk" && currentBarrierOS == "windows") {
             currentBarrierOS = "macos"
             logger.info("updating keyboard layer, switching to mac");
-            keyboardQmk.updateKeyboard(6, 1);
+            keyboardQmk.updateKeyboard(4, 1);
             electronObj.updateCurrentOS(currentBarrierOS)
         } else if (currentBarrierOS == "macos") {
             currentBarrierOS = "windows";
             logger.info("updating keyboard layer, switching to windows");
-            keyboardQmk.updateKeyboard(6, 0);
+            keyboardQmk.updateKeyboard(4, 0);
             electronObj.updateCurrentOS(currentBarrierOS);
         }
         res.send("received");

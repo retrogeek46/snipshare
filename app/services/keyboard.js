@@ -96,6 +96,15 @@ const attachErrorListener = () => {
     errorListenerAttached = true;
 };
 
+/*
+1 update_encoder_state
+2 send_encoder_state
+3 set_cpu_usage_rgb
+4 update_os_state
+5 test_rgb_value 
+6
+7
+*/
 exports.updateKeyboard = (value, extraValues=0) => {
     try {
         if (!keyboard) {
@@ -104,7 +113,11 @@ exports.updateKeyboard = (value, extraValues=0) => {
         if (extraValues == null) {
             extraValues = 0
         }
-        keyboard.write([1, 10, value, extraValues]);
+        if (typeof extraValues === "object") {
+            keyboard.write([1, 10, value].concat(extraValues));
+        } else {
+            keyboard.write([1, 10, value, extraValues]);
+        }
         return 1;
     } catch (ex) {
         logger.info(ex);

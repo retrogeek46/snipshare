@@ -12,6 +12,7 @@ const versionPara = document.getElementById("versionPara");
 const ipAddressPara = document.getElementById("ipAddressPara");
 const cpuParamsPara = document.getElementById("cpuParamsPara");
 const currentOSPara = document.getElementById("currentOS");
+const rgbBoxPara = document.getElementById("rgbBox");
 
 const serverIP = remote.getGlobal("serverIP");
 const appVersion = remote.getGlobal("appVersion");
@@ -42,6 +43,24 @@ const stopSystemInfoUITimer = () => {
     console.log("Stopping system info UI timer");
     clearInterval(systemInfoUITimer);
 };
+
+const applyKeyboardRGB = (event) => {
+    // event.preventDefault();
+    let rValue = document.getElementById("rValue").value;
+    let gValue = document.getElementById("gValue").value;
+    let bValue = document.getElementById("bValue").value;
+    console.log(
+        `Func called after button press with values rgb(${rValue}, ${gValue}, ${bValue})`
+    );
+    rgbBoxPara.style.backgroundColor = `rgb(${rValue}, ${gValue}, ${bValue})`;
+    // ipcRenderer.send("applyKeyboardRGB", "message");
+    ipcRenderer.send("applyKeyboardRGB", {
+        'r': parseInt(rValue),
+        'g': parseInt(gValue),
+        'b': parseInt(bValue)
+    })
+}
+
 
 ipcRenderer.on("updateCurrentOS", (event, currentOS) => {
     // console.log("in ipc renderer");
