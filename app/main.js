@@ -136,7 +136,6 @@ const attachKeyboardListener = () => {
     if (keyboardObj) {
         keyboardObj.on("data", (val) => {
             if (val[0] == 23) {
-                logger.info("received keyboard data in main");
                 mainWindow.webContents.send("updateKeyboardState", {
                     "encoderState": val[1],
                     "layerState": val[2],
@@ -209,7 +208,7 @@ app.on('ready', async () => {
     global.serverIP = server.getServerIP();
     global.appVersion = app.getVersion();
     // TODO: handle active win so that it is optional 
-    // spawnActiveWinProcess();
+    spawnActiveWinProcess();
     
     const qmkGetKeyboardState = globalShortcut.register(
         "Ctrl+Alt+-",
