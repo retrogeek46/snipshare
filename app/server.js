@@ -109,6 +109,7 @@ const server = async (electronObj) => {
             //     keyboardQmk.updateKeyboard(4);
             // }
             keyboardQmk.updateKeyboard(3, parseInt(cpuUsageRaw));
+            keyboardQmk.updateKeyboard(2);
             // let cpuVoltage = systemInfoValues["Value2"]["value"];
             const msg = `CPU Temp: ${cpuTemp}, CPU Voltage: ${cpuVoltage}, CPU Usage: ${cpuUsage}`;
             // logger.sysinfo(msg);

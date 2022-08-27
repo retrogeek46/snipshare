@@ -119,8 +119,8 @@ const sendEncoderStateChange = () => {
     keyboard.updateKeyboard(1);
 }
 
-const getEncoderState = () => {
-    keyboard.getEncoderState();
+const getKeyboardState = () => {
+    keyboard.getKeyboardState();
 }
 
 const resetKeyboard = () => {
@@ -130,6 +130,24 @@ const resetKeyboard = () => {
 const updateCurrentOS = () => {
     keyboard.updateKeyboard(4, 1);
 }
+
+const attachKeyboardListener = () => {
+    let keyboardObj = keyboard.getKeyboard();
+    if (keyboardObj) {
+        keyboardObj.on("data", (val) => {
+            if (val[0] == 23) {
+                logger.info("received keyboard data in main");
+                mainWindow.webContents.send("updateKeyboardState", {
+                    "encoderState": val[1],
+                    "layerState": val[2],
+                    "currentOS": val[3]
+                });
+            }
+        });
+    } else {
+
+    }
+};
 
 const createTray = async () => {
     let appIcon = new Tray(path.join(__dirname, "/Resources/cut-paper.png"));
@@ -190,16 +208,25 @@ app.on('ready', async () => {
     await server.startSystemInfoTimer();
     global.serverIP = server.getServerIP();
     global.appVersion = app.getVersion();
-    const sendSnipRegister = globalShortcut.register("Ctrl+Alt+9", () => {
-        sendSnip();
-    });
     // TODO: handle active win so that it is optional 
-    spawnActiveWinProcess();
-
+    // spawnActiveWinProcess();
+    
+    const qmkGetKeyboardState = globalShortcut.register(
+        "Ctrl+Alt+-",
+        () => {
+            attachKeyboardListener();
+        }
+    );
     const qmkUpdateOSRegister = globalShortcut.register(
         "Ctrl+Alt+0",
         () => {
             killActiveWinProcess();
+        }
+    );
+    const sendSnipRegister = globalShortcut.register(
+        "Ctrl+Alt+9",
+        () => {
+            sendSnip();
         }
     );
     const qmkUpdateEncoderRegister = globalShortcut.register(

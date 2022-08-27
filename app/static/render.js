@@ -11,6 +11,7 @@ let cpuUsage = "";
 const versionPara = document.getElementById("versionPara");
 const ipAddressPara = document.getElementById("ipAddressPara");
 const cpuParamsPara = document.getElementById("cpuParamsPara");
+const keyboardParamsPara = document.getElementById("keyboardParamsPara");
 const currentOSPara = document.getElementById("currentOS");
 const rgbBoxPara = document.getElementById("rgbBox");
 
@@ -61,10 +62,13 @@ const applyKeyboardRGB = (event) => {
     })
 }
 
-
 ipcRenderer.on("updateCurrentOS", (event, currentOS) => {
     // console.log("in ipc renderer");
     currentOSPara.innerHTML = "Current OS: " + currentOS;
+});
+
+ipcRenderer.on("updateKeyboardState", (event, keyboardState) => {
+    keyboardParamsPara.innerHTML = `Keyboard<br>Encoder State: ${keyboardState["encoderState"]} &nbsp;&nbsp; Layer State: ${keyboardState["layerState"]} &nbsp;&nbsp; Current OS: ${keyboardState["currentOS"]}`;
 });
 
 startSystemInfoUITimer();
