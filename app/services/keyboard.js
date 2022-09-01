@@ -1,7 +1,12 @@
 const hid = require("node-hid");
 const logger = require("../utils/logger");
 
-const KEYBOARD_NAME = "GMMK Pro ANSI";
+// const KEYBOARD_NAME = "GMMK Pro ANSI";
+// const KEYBOARD_USAGE_PAGE = 65376;
+// const KEYBOARD_USAGE_ID = 97;
+// const KEYBOARD_UPDATE_TIME = 1000;
+
+const KEYBOARD_NAME = "zoom65";
 const KEYBOARD_USAGE_PAGE = 65376;
 const KEYBOARD_USAGE_ID = 97;
 const KEYBOARD_UPDATE_TIME = 1000;
