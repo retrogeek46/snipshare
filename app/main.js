@@ -216,7 +216,7 @@ app.on('ready', async () => {
             attachKeyboardListener();
         }
     );
-    const qmkUpdateOSRegister = globalShortcut.register(
+    const killActiveWinProcessRegister = globalShortcut.register(
         "Ctrl+Alt+0",
         () => {
             killActiveWinProcess();

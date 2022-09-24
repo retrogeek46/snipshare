@@ -1,5 +1,5 @@
 const systemInfo = require("../services/systemMonitor.js");
-const constants = require("../utils/constants.js");
+const C = require("../utils/constants.js");
 const { remote, ipcRenderer } = require("electron");
 
 let cpuVoltage = "";
@@ -37,7 +37,7 @@ const startSystemInfoUITimer = async () => {
 
         cpuParamsPara.innerHTML = `CPU<br>Temp: ${cpuTemp} &nbsp;&nbsp; Voltage: ${cpuVoltage} &nbsp;&nbsp; Usage: ${cpuUsage}`;
 
-    }, constants.SYSTEM_INFO_INTERVAL);
+    }, C.SYSTEM_INFO_INTERVAL);
 };
 
 const stopSystemInfoUITimer = () => {
@@ -67,8 +67,8 @@ ipcRenderer.on("updateCurrentOS", (event, currentOS) => {
     currentOSPara.innerHTML = "Current OS: " + currentOS;
 });
 
-ipcRenderer.on("updateKeyboardState", (event, keyboardState) => {
-    keyboardParamsPara.innerHTML = `Keyboard<br>Encoder State: ${keyboardState["encoderState"]} &nbsp;&nbsp; Layer State: ${keyboardState["layerState"]} &nbsp;&nbsp; Current OS: ${keyboardState["currentOS"]}`;
+ipcRenderer.on("updateKeyboardState", (event, keebState) => {
+    keyboardParamsPara.innerHTML = `Keyboard<br>Encoder: ${C.ENCODER_STATES[keebState["encoderState"]]} &nbsp;&nbsp; Layer: ${C.KEEB_LAYERS[keebState["layerState"]]} &nbsp;&nbsp; OS: ${C.OS_STATES[keebState["currentOS"]]}`;
 });
 
 startSystemInfoUITimer();

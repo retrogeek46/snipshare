@@ -12,8 +12,7 @@ const KEYBOARD_USAGE_ID = 97;
 const KEYBOARD_UPDATE_TIME = 1000;
 
 let keyboard = null;
-let dataListenerAttached = false;
-
+let dataListenerAttached = false
 
 const connectKeyboard = () => {
     // logger.info("connect keyboard called");
