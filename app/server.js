@@ -108,7 +108,8 @@ const server = async (electronObj) => {
             // } else {
             //     keyboardQmk.updateKeyboard(4);
             // }
-            keyboardQmk.updateKeyboard(3, parseInt(cpuUsageRaw));
+            // XXX: stop sending cpu data to keyboard till rgb/oled is added to keeb
+            // keyboardQmk.updateKeyboard(3, parseInt(cpuUsageRaw));
             keyboardQmk.updateKeyboard(2);
             // let cpuVoltage = systemInfoValues["Value2"]["value"];
             const msg = `CPU Temp: ${cpuTemp}, CPU Voltage: ${cpuVoltage}, CPU Usage: ${cpuUsage}`;

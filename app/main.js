@@ -144,6 +144,7 @@ const attachKeyboardListener = async (retryCount=0) => {
     let keyboardObj = keyboard.getKeyboard();
     if (keyboardObj) {
         logger.info("Attaching keyboard UI listener");
+        keebStateUI = true;
         keyboardObj.on("data", (val) => {
             if (val[0] == 23) {
                 mainWindow.webContents.send("updateKeyboardState", {
@@ -217,8 +218,7 @@ const killActiveWinProcess = () => {
 app.on('ready', async () => {
     utils.clearLogs(app.getAppPath());
     await server.server(this);
-    // HACK: stop sending cpu data to keyboard till rgb/oled is added to keeb 
-    // await server.startSystemInfoTimer();
+    await server.startSystemInfoTimer();
     global.serverIP = server.getServerIP();
     global.appVersion = app.getVersion();
     // TODO: handle active win so that it is optional 

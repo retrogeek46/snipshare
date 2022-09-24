@@ -11,7 +11,7 @@ This project is for the desktop app + server and is built using ElectronJS for d
 ### QMK
 - The code communicates with QMK using raw-hid protocol. All messages are sent with id 10 with type of message being described by the integer at next index in the buffer.
     - 1: toggle encoder state
-    - 2: fetch current encoder state (does not work)
+    - 2: fetch current encoder state
     - 3: set cpu temp rgb to low (not being used)
     - 4: set cpu temp rgb to high (not being used)
     - 5: set cpu usage rgb (send current usage at next index in buffer)
