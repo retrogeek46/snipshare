@@ -13,6 +13,7 @@ const kill = require("tree-kill");
 
 let mainWindow;
 let activeWinProcess;
+let keebStateUI = false;
 
 const createMainWindow = () => {
     let win = new BrowserWindow({
@@ -131,9 +132,18 @@ const updateCurrentOS = () => {
     keyboard.updateKeyboard(4, 1);
 }
 
-const attachKeyboardListener = () => {
+const attachKeyboardListener = async (retryCount=0) => {
+    if (retryCount > 5) {
+        logger.error("Retry count exceeded");
+        return;
+    }
+    if (keebStateUI) {
+        logger.error("Keyboard already connected");
+        return;
+    }
     let keyboardObj = keyboard.getKeyboard();
     if (keyboardObj) {
+        logger.info("Attaching keyboard UI listener");
         keyboardObj.on("data", (val) => {
             if (val[0] == 23) {
                 mainWindow.webContents.send("updateKeyboardState", {
@@ -144,7 +154,10 @@ const attachKeyboardListener = () => {
             }
         });
     } else {
-
+        // FIXME: add time to wait in constants instead of directly using ms here
+        logger.info("Keyboard not initialized yet, retrying after 5 seconds");
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        attachKeyboardListener(retryCount + 1);
     }
 };
 
@@ -204,11 +217,13 @@ const killActiveWinProcess = () => {
 app.on('ready', async () => {
     utils.clearLogs(app.getAppPath());
     await server.server(this);
-    await server.startSystemInfoTimer();
+    // HACK: stop sending cpu data to keyboard till rgb/oled is added to keeb 
+    // await server.startSystemInfoTimer();
     global.serverIP = server.getServerIP();
     global.appVersion = app.getVersion();
     // TODO: handle active win so that it is optional 
     spawnActiveWinProcess();
+    attachKeyboardListener();
     
     const qmkGetKeyboardState = globalShortcut.register(
         "Ctrl+Alt+-",

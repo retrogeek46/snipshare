@@ -52,10 +52,10 @@ const server = async (electronObj) => {
 
     io.on("connection", async (socket) => {
         socket.on("disconnect", (msg) => {
-            logger.info(socket.id + " disconnected due to " + msg);
+            logger.error(socket.id + " disconnected due to " + msg);
         });
         socket.on("connected", (msg) => {
-            logger.info(`got ${msg}, client connected`);
+            logger.error(`got ${msg}, client connected`);
         });
         socket.on("fromWeb", (msg) => {
             // create native image from buffer
@@ -142,7 +142,7 @@ const server = async (electronObj) => {
     app.post("/updateActiveWin", (req, res) => {
         // const windowTitle = res.body.window;
         const windowTitle = req.body.windowTitle;
-        logger.info(windowTitle);
+        logger.debug(windowTitle);
         if (windowTitle == "BarrierDesk" && currentBarrierOS == "windows") {
             currentBarrierOS = "macos"
             logger.info("updating keyboard layer, switching to mac");
