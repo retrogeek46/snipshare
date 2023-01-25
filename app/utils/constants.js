@@ -22,5 +22,6 @@ module.exports = Object.freeze({
     OS_STATES:[
         "WIN",
         "MAC"
-    ]
+    ],
+    ALPHABET: "abcdefghijklmnopqrstuvwxyz"
 });

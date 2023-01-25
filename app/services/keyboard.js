@@ -85,7 +85,9 @@ exports.updateKeyboard = (value, extraValues=0) => {
             extraValues = 0
         }
         if (typeof extraValues === "object") {
-            keyboard.write([1, 10, value].concat(extraValues));
+            let data_sent = [1, 10, value].concat(extraValues);
+            logger.info(data_sent);
+            keyboard.write(data_sent);
         } else {
             keyboard.write([1, 10, value, extraValues]);
         }

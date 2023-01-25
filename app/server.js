@@ -141,9 +141,8 @@ const server = async (electronObj) => {
     });
 
     app.post("/updateActiveWin", (req, res) => {
-        // const windowTitle = res.body.window;
         const windowTitle = req.body.windowTitle;
-        logger.debug(windowTitle);
+        // logger.debug(windowTitle);
         if (windowTitle == "BarrierDesk" && currentBarrierOS == "windows") {
             currentBarrierOS = "macos"
             logger.info("updating keyboard layer, switching to mac");
@@ -155,6 +154,17 @@ const server = async (electronObj) => {
             keyboardQmk.updateKeyboard(4, 0);
             electronObj.updateCurrentOS(currentBarrierOS);
         }
+        res.send("received");
+    });
+
+    app.post("/updateCurrentMedia", (req, res) => {
+        logger.debug(req.body);
+        const currentMediaTitle = req.body.currentMediaTitle.toLowerCase();
+        const currentArtist = req.body.currentArtist.toLowerCase();
+        logger.debug(currentMediaTitle, currentArtist);
+        const mediaTitleArray = [...currentMediaTitle].map(i => i.charCodeAt(0))
+        logger.info(mediaTitleArray);
+        keyboardQmk.updateKeyboard(6, mediaTitleArray);
         res.send("received");
     });
 

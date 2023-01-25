@@ -10,6 +10,7 @@ const logger = require("./utils/logger");
 const utils = require("./utils/utils");
 const spawn = require("child_process").spawn;
 const kill = require("tree-kill");
+const constants = require('./utils/constants.js');
 
 let mainWindow;
 let activeWinProcess;
@@ -117,7 +118,11 @@ const sendSnip = () => {
 }
 
 const sendEncoderStateChange = () => {
-    keyboard.updateKeyboard(1);
+    // keyboard.updateKeyboard(1);
+    const randomCharacter =
+        constants.ALPHABET[Math.floor(Math.random() * constants.ALPHABET.length)];
+    logger.info(randomCharacter);
+    keyboard.updateKeyboard(6, randomCharacter.charCodeAt(0));
 }
 
 const getKeyboardState = () => {
@@ -212,6 +217,7 @@ const spawnActiveWinProcess = () => {
 const killActiveWinProcess = () => {
     if (activeWinProcess != null) {
         kill(activeWinProcess.pid);
+        logger.info("Killed active win process");
     }
 }
 
@@ -222,7 +228,7 @@ app.on('ready', async () => {
     global.serverIP = server.getServerIP();
     global.appVersion = app.getVersion();
     // TODO: handle active win so that it is optional 
-    spawnActiveWinProcess();
+    // spawnActiveWinProcess();
     attachKeyboardListener();
     
     const qmkGetKeyboardState = globalShortcut.register(
@@ -265,7 +271,7 @@ app.on('ready', async () => {
     const stopSystemInfoTimer = globalShortcut.register(
         "Ctrl+Alt+5",
         async () => {
-            server.stopSystemInfoTimer();
+            sendEncoderStateChange();
         }
     );
     mainWindow = createMainWindow();
